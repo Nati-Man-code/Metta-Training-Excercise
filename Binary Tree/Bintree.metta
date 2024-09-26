@@ -1,85 +1,72 @@
-;Types
-(: Tree Types)
-(: Value Types)
+; Define types for Tree and Value
+(: Tree Type)
+(: Value Type)
 
-;empty Tree
+; Define an empty tree (leaf)
 (: EmptyTree Tree)
 
-;a node to point to a value and has left and right
-(: Node (-> value Tree Tree Tree))
+; Define a tree node that points to a value and has left and right subtrees
+(: Node (-> Value Tree Tree Tree))
 
-;test
-(: Val1 Value)
-(: Val2 Value)
-(: Val3 Value)
-(: Val4 Value)
+; Define some test values for the tree nodes
+(: val1 Value)
+(: val2 Value)
+(: val3 Value)
+(: val4 Value)
 
-;Example binary tree
-!(Node Val1 (Node Val2 EmptyTree EmptyTree) 
-            (Node Val3 EmptyTree (Node Val4 EmptyTree EmptyTree))
-)
+; Example binary tree:
+! (Node val1 (Node val2 EmptyTree EmptyTree) (Node val3 EmptyTree (Node val4 EmptyTree EmptyTree)))
 
-;Function to get the left, Right, value and has a node two children of a binary tree
-;Get the left child
-(= (getleft $tree)
-   (case $tree
-        (
-            ((Node $Val $left $right) $left)
-            (() ())
-        )
-   )
-)
+; Functions to get left child, right child, and value from a node
 
-;Get the right child
-(= (getright $tree)
-   (case $tree
-        (
-            ((Node $Val $right $left) $right)
-            (() ())
-        )
-   )
+; Get the left child of a node
+(=(getLeft $tree)
+  (case $tree
+    (
+      ((Node $val $left $right) $left)
+      (() ())
+    )
+  )
 )
 
-;Get the value 
-(= (getvalue $tree)
-   (case $tree
-         (
-            ((Node $Val $right $left) $Val)
-            (() ())
-         )
-   )
+; Get the right child of a node
+(=(getRight $tree)
+  (case $tree
+    (
+      ((Node $val $left $right) $right)
+      (() ())
+    )
+  )
 )
 
-;Check if a node has exactly two children
-(= (hastwochildren $tree)
-   (case $tree
-         (
-            ((Node $Val $left $right)
-             (and 
-               (not (== $left EmptyTree))
-               (not (== $right EmptyTree))
-             )
-            (() false)
-            )
-         )
-   )
+; Get the value of a node
+(=(getValue $tree)
+  (case $tree
+    (
+      ((Node $val $left $right) $val)
+      (() ())
+    )
+  )
 )
 
-;Test case
-!(getleft (Node Val1(Node Val2 EmptyTree EmptyTree)
-          (Node Val3 EmptyTree (Node Val4 EmptyTree EmptyTree))
-          )
+; Function to calculate the maximum depth of a binary tree
+(=(maxDepth $tree)
+  (case $tree
+    (
+      ((Node $val $left $right)
+        (+ 1 (max (maxDepth $left) (maxDepth $right)))  ; 1 + max of left and right subtree depths
+      )
+      (EmptyTree 0)  ; If it's an empty tree, depth is 0
+    )
+  )
 )
-!(getright (Node Val1(Node Val2 EmptyTree EmptyTree)
-          (Node Val3 EmptyTree (Node Val4 EmptyTree EmptyTree))
-          )
-)
-!(getvalue (Node Val1(Node Val2 EmptyTree EmptyTree)
-          (Node Val3 EmptyTree (Node Val4 EmptyTree EmptyTree))
-          )
-)
-!(hastwochildren (Node Val1(Node Val2 EmptyTree EmptyTree)
-          (Node Val3 EmptyTree (Node Val4 EmptyTree EmptyTree))
-          )
-)
-!(hastwochildren (Node Val1(Node Val2 EmptyTree EmptyTree) EmptyTree))
+
+; Test cases
+! (getLeft (Node val1 (Node val2 EmptyTree EmptyTree) (Node val3 EmptyTree (Node val4 EmptyTree EmptyTree))))
+! (getRight (Node val1 (Node val2 EmptyTree EmptyTree) (Node val3 EmptyTree (Node val4 EmptyTree EmptyTree))))
+! (getValue (Node val1 (Node val2 EmptyTree EmptyTree) (Node val3 EmptyTree (Node val4 EmptyTree EmptyTree))))
+
+;max depth test case
+! (maxDepth (Node val1 (Node val2 EmptyTree EmptyTree) (Node val3 EmptyTree (Node val4 EmptyTree EmptyTree))))
+! (maxDepth (Node val1 (Node val2 (Node val5 EmptyTree EmptyTree) EmptyTree) EmptyTree))
+! (maxDepth EmptyTree)
